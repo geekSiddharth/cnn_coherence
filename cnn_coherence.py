@@ -1,6 +1,6 @@
 from __future__ import division
 
-from keras.layers import AveragePooling1D, Flatten, Input, Embedding, LSTM, Dense, merge, Convolution1D, MaxPooling1D, Dropout
+from keras.layers import AveragePooling1D, Flatten, Input, Embedding, LSTM, Dense, concatenate, Convolution1D, MaxPooling1D, Dropout
 from keras.models import Model
 from keras import objectives
 from keras.preprocessing import sequence
@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
     #fn = range(0,10) #using feature
     vocab = data_helper.load_all(filelist="data/wsj.train_dev",fn=fn)
-    print vocab
+    print (vocab)
 
     print("loading entity-gird for pos and neg documents...")
     X_train_1, X_train_0, E = data_helper.load_and_numberize_Egrid_with_Feats("data/wsj.train", 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     pos_branch = shared_cnn(pos_input)
     neg_branch = shared_cnn(neg_input)
 
-    concatenated = merge([pos_branch, neg_branch], mode='concat',name="coherence_out")
+    concatenated = concatenate([pos_branch, neg_branch], axis=1 ,name="coherence_out")
     # output is two latent coherence score
 
     final_model = Model([pos_input, neg_input], concatenated)
